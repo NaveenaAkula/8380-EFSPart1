@@ -138,7 +138,6 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = 'test team <adapanaveena2526@gmail.com>'
 
-<<<<<<< HEAD
 django_heroku.settings(locals())
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -146,6 +145,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL ='/media/'
-
-=======
->>>>>>> 5b1d31ff970cdea837d7f027020fcca1349590a9
