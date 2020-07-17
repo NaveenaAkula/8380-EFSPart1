@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render
 from .models import *
 from .forms import *
@@ -18,6 +19,23 @@ def customer_list(request):
     customer = Customer.objects.filter(created_date__lte=timezone.now())
     return render(request, 'portfolio/customer_list.html',
                   {'customers': customer})
+
+
+@login_required
+def customer_new(request):
+    if request.method == "POST":
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            customer = form.save(commit=False)
+            customer.created_date = timezone.now()
+            customer.save()
+            customers = Customer.objects.filter(created_date__lte=timezone.now())
+            return render(request, 'portfolio/customer_list.html',
+                          {'customers': customers})
+    else:
+        form = CustomerForm()
+        # print("Else")
+    return render(request, 'portfolio/customer_new.html', {'form': form})
 
 
 @login_required
@@ -139,3 +157,15 @@ def investment_delete(request, pk):
     investment = get_object_or_404(Investment, pk=pk)
     investment.delete()
     return redirect('portfolio:investment_list')
+
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(data=request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = PasswordChangeForm(user=request.user)
+        args = {'form': form}
+        return render(request, 'portfolio/change_password.html', args)
