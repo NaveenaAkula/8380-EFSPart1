@@ -1,63 +1,148 @@
 {% extends 'portfolio/base.html' %}
 {% load staticfiles %}
 {% block content %}
+
+
       <div>
-                {% if user.is_authenticated %}
-                <div class="page-container" style="display: flex">
-                    <p style="text-align: center;font-style: italic;font-size: 18px">Please choose from below options.</p>
+          {% if user.is_authenticated %}
+              {% if user.is_superuser %}
+                    <div class="content container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="links">
+                                <!-- Example row of columns -->
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="thumbnail">
+                                            <img src="{% static "images/customer.jpg" %}" alt="customer"/>
+                                            <div class="caption">
+                                                <h2>Customer</h2>
+                                                <p>We see our success in our customers success, it gives us an immense
+                                                      pleasure when our
+                                                    advises
+                                                    turn out to be fruitful. </p>
+                                                <p><a class="btn btn-primary" href="{% url 'portfolio:customer_list' %}"
+                                                      role="button">View
+                                                    details &raquo;</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="thumbnail">
+                                            <img src="{% static "images/nonstock.jpg" %}" alt="non-stock"/>
+                                            <div class="caption">
+                                                <h2>Non-Stock Investments</h2>
+                                                <p>Our team also provides advises for Non-Stock investments.</p>
+                                                <p><a class="btn btn-primary" href="{% url 'portfolio:investment_list' %}"
+                                                      role="button">View
+                                                    details &raquo;</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="thumbnail" style="height: 39.5rem;">
+                                            <img src="{% static "images/stocks.jpg" %}" alt="stocks"/>
+                                            <div class="caption">
+                                                <h2>Stocks</h2>
+                                                <p>Our Stock portfolios vary across industries.</p>
+                                                <p style="margin-top: 4.5rem!important;"><a class="btn btn-primary" href="{% url 'portfolio:stock_list' %}"
+                                                      role="button">View
+                                                    details &raquo;</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                </div>
-            {% endif %}
-            <div class="content container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="links">
-                            <!-- Example row of columns -->
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="thumbnail">
-                                        <img src="{% static "images/customer.jpg" %}" alt="customer"/>
-                                        <div class="caption">
-                                            <h2>Customer</h2>
-                                            <p>We see our success in our customers success, it gives us an immense
-                                                  pleasure when our
-                                                advises
-                                                turn out to be fruitful. </p>
-                                            <p><a class="btn btn-primary" href="{% url 'portfolio:customer_list' %}"
-                                                  role="button">View
-                                                details &raquo;</a></p>
-                                        </div>
-                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="thumbnail">
-                                        <img src="{% static "images/nonstock.jpg" %}" alt="non-stock"/>
-                                        <div class="caption">
-                                            <h2>Non-Stock Investments</h2>
-                                            <p>Our team also provides advises for Non-Stock investments.</p>
-                                            <p><a class="btn btn-primary" href="{% url 'portfolio:investment_list' %}"
-                                                  role="button">View
-                                                details &raquo;</a></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="thumbnail" style="height: 39.5rem;">
-                                        <img src="{% static "images/stocks.jpg" %}" alt="stocks"/>
-                                        <div class="caption">
-                                            <h2>Stocks</h2>
-                                            <p>Our Stock portfolios vary across industries.</p>
-                                            <p style="margin-top: 4.5rem!important;"><a class="btn btn-primary" href="{% url 'portfolio:stock_list' %}"
-                                                  role="button">View
-                                                details &raquo;</a></p>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+              {% endif %}
+              {% if user.Role == 'FA' %}
+                <div>
+                    <h3>Welcome Financial Advisor!! </h3>
+                </div>
+                 <div class="content container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="links">
+                                <!-- Example row of columns -->
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="thumbnail">
+                                            <img src="{% static "images/customer.jpg" %}" alt="customer"/>
+                                            <div class="caption">
+                                                <h2>Customer</h2>
+                                                <p>We see our success in our customers success, it gives us an immense
+                                                      pleasure when our
+                                                    advises
+                                                    turn out to be fruitful. </p>
+                                                <p><a class="btn btn-primary" href="{% url 'portfolio:customer_list' %}"
+                                                      role="button">View
+                                                    details &raquo;</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="thumbnail">
+                                            <img src="{% static "images/nonstock.jpg" %}" alt="non-stock"/>
+                                            <div class="caption">
+                                                <h2>Non-Stock Investments</h2>
+                                                <p>Our team also provides advises for Non-Stock investments.</p>
+                                                <p><a class="btn btn-primary" href="{% url 'portfolio:investment_list' %}"
+                                                      role="button">View
+                                                    details &raquo;</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="thumbnail" style="height: 39.5rem;">
+                                            <img src="{% static "images/stocks.jpg" %}" alt="stocks"/>
+                                            <div class="caption">
+                                                <h2>Stocks</h2>
+                                                <p>Our Stock portfolios vary across industries.</p>
+                                                <p style="margin-top: 4.5rem!important;"><a class="btn btn-primary" href="{% url 'portfolio:stock_list' %}"
+                                                      role="button">View
+                                                    details &raquo;</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              {% endif %}
+                 {% if user.Role == 'Cust' %}
+                <div style="display: inline-block;align-items: center">
+                    <h3>Welcome!! </h3>
+                    <p>Please contact your financial advisor to know about the stocks and investments</p>
+                    <table class="table table-striped table-bordered table-hover table-responsive">
+                        <thead class="thead-dark bg-primary">
+                        <tr>
+                            <th>Primary Email</th>
+                            <th>Cell Phone</th>
+                            <th colspan="3">Actions</th>
+                        </tr>
+                        </thead>
+                         <tbody>
+
+                            <tr>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.cell_phone }}</td>
+
+
+
+                             <td><a href="" class="btn btn-primary">Portfolio</a>
+
+                </tr>
+
+            </tbody>
+        </table>
+                </div>
+
+              {% endif %}
+          {% endif %}
       </div>
 {% endblock %}
