@@ -1,9 +1,18 @@
+import decimal
+
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.template.loader import get_template, render_to_string
+
 from .models import *
 from .forms import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
+from django.db.models import Sum
+from django.http import HttpResponse
+from .utils import render_to_pdf
+from django.core.mail import EmailMultiAlternatives
+
+
 
 now = timezone.now()
 
@@ -139,3 +148,108 @@ def investment_delete(request, pk):
     investment = get_object_or_404(Investment, pk=pk)
     investment.delete()
     return redirect('portfolio:investment_list')
+
+
+@login_required
+def portfolio(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    customers = Customer.objects.filter(created_date__lte=timezone.now())
+    investments = Investment.objects.filter(customer=pk)
+    stocks = Stock.objects.filter(customer=pk)
+    sum_recent_value = Investment.objects.filter(customer=pk).aggregate(Sum('recent_value'))
+    sum_acquired_value = Investment.objects.filter(customer=pk).aggregate(Sum('acquired_value'))
+    # overall_investment_results = sum_recent_value-sum_acquired_value
+    # Initialize the value of the stocks
+    sum_current_stocks_value = 0
+    sum_of_initial_stock_value = 0
+    sum_current_investment_value = 0
+    sum_of_initial_investment_value = 0
+    # Loop through each stock and add the value to the total
+    for stock in stocks:
+        sum_current_stocks_value += stock.current_stock_value()
+        sum_of_initial_stock_value += stock.initial_stock_value()
+
+    result = decimal.Decimal(sum_current_stocks_value) - (sum_of_initial_stock_value)
+
+    for investment in investments:
+        sum_current_investment_value += investment.recent_value
+        sum_of_initial_investment_value += investment.acquired_value
+
+    result1 = sum_current_investment_value - sum_of_initial_investment_value
+    Total_current_investments = float(sum_current_stocks_value) + float(sum_current_investment_value)
+    Total_initial_investmensts = float(sum_of_initial_investment_value) + float(sum_of_initial_stock_value)
+    Grand_total = result + result1
+
+    return render(request,'portfolio/portfolio.html', {'customer': customer,'customers': customers,
+               'investments': investments,
+               'stocks': stocks,
+               'sum_acquired_value': sum_acquired_value,
+               'sum_recent_value': sum_recent_value,
+               'result': result,
+               'sum_current_stocks_value': sum_current_stocks_value,
+               'sum_of_initial_stock_value': sum_of_initial_stock_value,
+               'sum_current_investment_value': sum_current_investment_value,
+               'sum_of_initial_investment_value': sum_of_initial_investment_value,
+               'result1': result1,
+               'Total_current_investments': Total_current_investments,
+               'Total_initial_investmensts': Total_initial_investmensts,
+               'Grand_total': Grand_total});
+
+def generate_pdf_view(request,pk, *args, **kwargs):
+    customer = get_object_or_404(Customer, pk=pk)
+    customers = Customer.objects.filter(created_date__lte=timezone.now())
+    investments = Investment.objects.filter(customer=pk)
+    stocks = Stock.objects.filter(customer=pk)
+    sum_recent_value = Investment.objects.filter(customer=customer).aggregate(Sum('recent_value'))
+    sum_acquired_value = Investment.objects.filter(customer=customer).aggregate(Sum('acquired_value'))
+    sum_current_stocks_value = 0
+    sum_of_initial_stock_value = 0
+    sum_current_investment_value = 0
+    sum_of_initial_investment_value = 0
+    # Loop through each stock and add the value to the total
+    for stock in stocks:
+        sum_current_stocks_value += stock.current_stock_value()
+        sum_of_initial_stock_value += stock.initial_stock_value()
+
+    result = decimal.Decimal(sum_current_stocks_value) - (sum_of_initial_stock_value)
+
+    for investment in investments:
+        sum_current_investment_value += investment.recent_value
+        sum_of_initial_investment_value += investment.acquired_value
+
+    result1 = sum_current_investment_value - sum_of_initial_investment_value
+
+    Total_current_investments = float(sum_current_stocks_value) + float(sum_current_investment_value)
+    Total_initial_investmensts = float(sum_of_initial_investment_value) + float(sum_of_initial_stock_value)
+    Grand_total = result + result1
+
+    template = get_template('portfolio/Pdf.html')
+    context = {
+               'customers' : customers,
+                'investments': investments,
+                'stocks': stocks,
+                'sum_acquired_value': sum_acquired_value,
+                'sum_recent_value': sum_recent_value,
+                'result': result,
+                'sum_current_stocks_value': sum_current_stocks_value,
+                'sum_of_initial_stock_value': sum_of_initial_stock_value,
+                'sum_current_investment_value':sum_current_investment_value,
+                'sum_of_initial_investment_value':sum_of_initial_investment_value,
+                'result1':result1,
+                'Total_current_investments':Total_current_investments,
+                'Total_initial_investmensts': Total_initial_investmensts,
+                'Grand_total':Grand_total}
+    html = template.render(context)
+    pdf = render_to_pdf('portfolio/Pdf.html', context)
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = "customer_%s.pdf" % ("portfolio")
+        content = "inline; filename=%s" %(filename)
+        download = request.GET.get("download")
+        print('888888888888888')
+        if download:
+            content = "attachment; filename= %s" %(filename)
+        response['Content-Disposition'] = content
+        return response
+
+    return HttpResponse("Not found")

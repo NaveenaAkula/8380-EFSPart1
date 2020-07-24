@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+import requests
 
 
 # Create your models here.
@@ -69,3 +70,22 @@ class Stock(models.Model):
 
     def initial_stock_value(self):
         return self.shares * self.purchase_price
+
+    def current_stock_price(self):
+        symbol_f = str(self.symbol)
+        main_api = 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol='
+        api_key = '&interval=1min&apikey=DIEHSUTDE76KU073'
+        url = main_api + symbol_f + api_key
+        json_data = requests.get(url).json()
+        open_price = float(json_data["Global Quote"]["02. open"])
+        share_value = open_price
+        return share_value
+
+    def current_stock_value(self):
+        return float(self.current_stock_price()) * float(self.shares)
+
+    def currency_rate(self):
+        main_api = 'https://free.currconv.com/api/v7/convert?q=INR_PHP&compact=ultra&apiKey=9d88d44ed0b4895bcb88'
+        json_data = requests.get(main_api).json()
+        value = float(json_data["INR_PHP"])
+        return value
