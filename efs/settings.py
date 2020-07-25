@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'mathfilters',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'users',
+    'chartjs',
 
 ]
 
@@ -74,7 +76,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'efs.wsgi.application'
-
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -132,5 +134,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'adapanaveena2526@gmail.com'
-EMAIL_HOST_PASSWORD = 'qstaoqbwxkexmdpe'
+EMAIL_HOST_PASSWORD = 'P@$$wrd1'
 DEFAULT_FROM_EMAIL = 'test team <adapanaveena2526@gmail.com>'
+
+# qstaoqbwxkexmdpe
