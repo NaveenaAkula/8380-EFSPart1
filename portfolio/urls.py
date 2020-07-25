@@ -3,15 +3,16 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
 from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
+from django.contrib.auth import views as auth_views
 
 app_name = 'portfolio'
 urlpatterns = [
-
-    path('', views.home, name='home'),
+    # path('', views.home, name='home'),
     path('home/', views.home, name='home'),
-    path('customer/', views.customer_list, name='customer_list'),
+    path('',auth_views.LoginView.as_view(), name='login'),
+    path('customer_list', views.customer_list, name='customer_list'),
     path('customer/create/', views.customer_new, name='customer_new'),
+    path('customer/<int:pk>/edit/', views.customer_edit, name='customer_edit'),
     path('customer/<int:pk>/delete/', views.customer_delete, name='customer_delete'),
     path('customer/<int:pk>/edit/', views.customer_edit, name='customer_edit'),
     path('investment/', views.investment_list, name='investment_list'),
@@ -27,7 +28,6 @@ urlpatterns = [
     path('change_password/', views.change_password, name='change_password'),
     url(r'^customers_json/', views.CustomerList.as_view()),
     path('customer/<int:pk>/portfolio/pie-chart/', views.pie_chart, name='pie-chart'),
-
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

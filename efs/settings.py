@@ -25,7 +25,7 @@ SECRET_KEY = '_3^4q9u^djrn+cn*859cax1lphj^9$@r5_httrto+z@7it2*wr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -44,9 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'users',
     'chartjs',
-
 ]
 
+AUTH_USER_MODEL = 'users.CustomUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -122,10 +122,8 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
 LOGIN_REDIRECT_URL = '/home'
-LOGOUT_REDIRECT_URL='/home'
+LOGOUT_REDIRECT_URL='/login'
 
 STATIC_URL = '/static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -136,5 +134,3 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'adapanaveena2526@gmail.com'
 EMAIL_HOST_PASSWORD = 'P@$$wrd1'
 DEFAULT_FROM_EMAIL = 'test team <adapanaveena2526@gmail.com>'
-
-# qstaoqbwxkexmdpe

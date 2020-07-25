@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.template.loader import get_template, render_to_string
+from django.shortcuts import render
 
 from .models import *
 from .forms import *
@@ -45,6 +46,23 @@ def customer_list(request):
     customer = Customer.objects.filter(created_date__lte=timezone.now())
     return render(request, 'portfolio/customer_list.html',
                   {'customers': customer})
+
+
+@login_required
+def customer_new(request):
+    if request.method == "POST":
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            customer = form.save(commit=False)
+            customer.created_date = timezone.now()
+            customer.save()
+            customers = Customer.objects.filter(created_date__lte=timezone.now())
+            return render(request, 'portfolio/customer_list.html',
+                          {'customers': customers})
+    else:
+        form = CustomerForm()
+        # print("Else")
+    return render(request, 'portfolio/customer_new.html', {'form': form})
 
 
 @login_required
