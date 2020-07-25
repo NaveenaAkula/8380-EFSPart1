@@ -15,7 +15,7 @@
 </head>
  <style>
         body {
-            background-color: aliceblue;
+                background-color: lightblue;
 
         }
         .table{
@@ -48,6 +48,8 @@
   <div class="row" style="margin-left: 90rem;">
        <a href="{% url 'portfolio:generate_pdf_view' pk=customer.pk %}"
                            class="btn btn-warning">Export PDF</a>
+        <a href="{% url 'portfolio:pie-chart' pk=customer.pk %}"
+                           class="btn btn-warning">Pie Chart</a>
   </div>
   <div class="container">
     <h2 class="navbar-brand" style="padding-left: 15Px">Overall Portfolio</h2>
@@ -57,6 +59,8 @@
             <th>Portfolio Initial Investments</th>
             <th>Portfolio Current Investments</th>
             <th>Grand Total Results</th>
+            <th>INR Total Results</th>
+
 
         </tr>
         </thead>
@@ -64,7 +68,8 @@
                 <tr>
                     <td>{{ Total_initial_investmensts }}</td>
                     <td>{{ Total_current_investments }}</td>
-                    <td>{{ Grand_total }}</td>
+                    <td>{{ Total }}</td>
+                    <td>{{ INR_Total }} INR</td>
 
                 </tr>
 
@@ -79,6 +84,7 @@
             <th>Total of Initial Stocks</th>
             <th>Total of Current Stocks</th>
             <th>Results</th>
+            <th>INR Stocks</th>
         </tr>
         </thead>
         <tbody>
@@ -86,7 +92,8 @@
                 <tr>
                     <td>{{ sum_of_initial_stock_value }}</td>
                     <td>{{ sum_current_stocks_value }}</td>
-                    <td>{{ result }}</td>
+                    <td>{{ stock_result }}</td>
+                    <td>{{ INR_value_stock }} INR</td>
 
                 </tr>
 
@@ -137,6 +144,7 @@
                     <th>Total of Initial Investments</th>
                     <th>Total of Current Investments</th>
                     <th>Results</th>
+                    <th>Total in Indian Currency Rate</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -144,7 +152,8 @@
                         <tr>
                             <td>{{ sum_of_initial_investment_value }}</td>
                             <td>{{ sum_current_investment_value }}</td>
-                            <td>{{ result1 }}</td>
+                            <td>{{ investment_result }}</td>
+                            <td>{{ INR_value_investment }} INR</td>
 
                         </tr>
 

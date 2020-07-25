@@ -68,11 +68,14 @@
                     <td><a href="{% url 'portfolio:portfolio' pk=customer.pk %}"
                            class="btn btn-primary">Portfolio</a>
 
-
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+            <div class="row col-lg-2    ">
+            <a href="{% url 'portfolio:customer_new' %}" class="row"><span
+                    class="btn btn-primary">Add Customer</span></a>
+        </div>
 
        </div>
    </div>
