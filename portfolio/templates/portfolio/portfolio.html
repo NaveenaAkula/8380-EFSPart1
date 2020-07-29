@@ -15,7 +15,7 @@
 </head>
  <style>
         body {
-                background-color: lightblue;
+                background-color: lightgray;
 
         }
         .table{
@@ -43,14 +43,23 @@
     </div>
 
 
-  <div class="row" style="font-size: 30px">Customer Portfolio</div>
+  <div class="row" style="font-size: 30px">Customer Portfolio
+      <span style="margin-left: 90rem;">
+         <a href="{% url 'portfolio:generate_pdf_view' pk=customer.pk %}"
+                           class="btn btn-warning">Export PDF</a></span>
+          <a href="{% url 'portfolio:donut' pk=customer.pk %}"
+                           class="btn btn-warning">View Reports</a>
 
-  <div class="row" style="margin-left: 90rem;">
-       <a href="{% url 'portfolio:generate_pdf_view' pk=customer.pk %}"
-                           class="btn btn-warning">Export PDF</a>
-        <a href="{% url 'portfolio:pie-chart' pk=customer.pk %}"
-                           class="btn btn-warning">Pie Chart</a>
   </div>
+
+<!--  <div class="row" style="margin-left: 90rem;">-->
+<!--       <a href="{% url 'portfolio:generate_pdf_view' pk=customer.pk %}"-->
+<!--                           class="btn btn-warning">Export PDF</a>  </div>-->
+<!--     <div> <a href="{% url 'portfolio:donut' pk=customer.pk %}"-->
+<!--                           class="btn btn-warning">View Reports</a></div>-->
+
+
+
   <div class="container">
     <h2 class="navbar-brand" style="padding-left: 15Px">Overall Portfolio</h2>
       <table class="table table-hover table-responsive-lg text-center">
@@ -160,6 +169,42 @@
                 </tbody>
             </table>
         </div>
+      <div>
+          <div class="row">
+            <h2 class="navbar-brand" style="padding-left: 15Px"><u>Mutual Funds Information</u></h2>
+      </div>
+          <div class="row">
+            <table class="table table-hover table-responsive-lg text-center">
+                <thead class="thead-dark bg-primary">
+                <tr>
+                    <th>Customer number</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Acquired Value</th>
+                    <th>Acquired Date</th>
+                    <th>Recent Value</th>
+                    <th>Recent Date</th>
+                    <th>Results</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for mutualfund in mutualfunds %}
+                        <tr>
+                            <td>{{ mutualfund.customer }}</td>
+                            <td>{{ mutualfund.category }}</td>
+                            <td>{{ mutualfund.description }}</td>
+                            <td>{{ mutualfund.acquired_value|intcomma }}</td>
+                            <td>{{ mutualfund.acquired_date }}</td>
+                            <td>{{ mutualfund.recent_value|intcomma }}</td>
+                            <td>{{ mutualfund.recent_date }}</td>
+                            <td>{{ mutualfund.recent_value|sub:mutualfund.acquired_value }}</td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+      </div>
     </div>
 
 

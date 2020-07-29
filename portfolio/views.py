@@ -1,13 +1,7 @@
-from django.core.mail import send_mail
-from django.core.mail import EmailMessage
 import decimal
-from django.conf import settings
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from django.template.loader import get_template, render_to_string
-from django.shortcuts import render
-
+from django.template.loader import get_template
 from .models import *
 from .forms import *
 from django.shortcuts import render, get_object_or_404
@@ -15,12 +9,10 @@ from django.shortcuts import redirect
 from django.db.models import Sum
 from django.http import HttpResponse
 from .utils import render_to_pdf
-from django.core.mail import EmailMultiAlternatives
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from .serializers import CustomerSerializer
+
 
 
 # List at the end of the views.py
@@ -307,12 +299,7 @@ def generate_pdf_view(request, pk, *args, **kwargs):
         filename = "customer_%s.pdf" % ("portfolio")
         content = "inline; filename=%s" % (filename)
         download = request.GET.get("download")
-        subject, from_email, to = 'hello', 'adapanaveena2526@gmail.com', 'adapanaveena2526@gmail.com'
-        text_content = 'This is an important message.'
-        html_content = html_message = render_to_string('portfolio/Pdf.html', {'context': 'values'})
-        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
+
         if download:
             content = "attachment; filename= %s" % (filename)
         response['Content-Disposition'] = content
@@ -333,33 +320,103 @@ def change_password(request):
         return render(request, 'portfolio/change_password.html', args)
 
 
-def pie_chart(request, pk):
-    labels = []
-    data = []
-    if request.user.Role == "FA":
-        customer = get_object_or_404(Customer, pk=pk)
-        queryset = Stock.objects.filter(customer__cust_number=customer.cust_number)
+@login_required
+def donut_chart(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    customers = Customer.objects.filter(created_date__lte=timezone.now())
+    investments = Investment.objects.filter(customer=pk)
+    stocks = Stock.objects.filter(customer=pk)
+    sum_recent_value = Investment.objects.filter(customer=pk).aggregate(Sum('recent_value'))
+    sum_acquired_value = Investment.objects.filter(customer=pk).aggregate(Sum('acquired_value'))
+    # overall_investment_results = sum_recent_value-sum_acquired_value
+    # Initialize the value of the stocks
+    sum_current_stocks_value = 0
+    sum_of_initial_stock_value = 0
+    sum_current_investment_value = 0
+    sum_of_initial_investment_value = 0
+    INR_value_stock = 0
+    INR_value_investment = 0
+    # Loop through each stock and add the value to the total
+    for stock in stocks:
+        sum_current_stocks_value += stock.current_stock_value()
+        sum_of_initial_stock_value += stock.initial_stock_value()
 
-        for stocks in queryset:
-            labels.append(stocks.name)
-            data.append(stocks.symbol)
+    stock_result = decimal.Decimal(sum_current_stocks_value) - (sum_of_initial_stock_value)
+    INR_value_stock = float(stock_result) * stock.currency_rate()
+    for investment in investments:
+        sum_current_investment_value += investment.recent_value
+        sum_of_initial_investment_value += investment.acquired_value
+
+    investment_result = sum_current_investment_value - sum_of_initial_investment_value
+    INR_value_investment = float(investment_result) * stock.currency_rate()
+    Total_current_investments = float(sum_current_stocks_value) + float(sum_current_investment_value)
+    Total_initial_investmensts = float(sum_of_initial_investment_value) + float(sum_of_initial_stock_value)
+    Total = stock_result + investment_result
+    INR_Total = INR_value_stock + INR_value_investment
+
+    return render(request, 'portfolio/piechart.html', { 'customer': customer,
+                                                        'customers': customers,
+                                                        'investments': investments,
+                                                        'stocks': stocks,
+                                                        'sum_acquired_value': sum_acquired_value,
+                                                        'sum_recent_value': sum_recent_value,
+                                                        'stock_result': stock_result,
+                                                        'sum_current_stocks_value': sum_current_stocks_value,
+                                                        'sum_of_initial_stock_value': sum_of_initial_stock_value,
+                                                        'sum_current_investment_value': sum_current_investment_value,
+                                                        'sum_of_initial_investment_value': sum_of_initial_investment_value,
+                                                        'investment_result': investment_result,
+                                                        'INR_value_stock': INR_value_stock,
+                                                        'INR_value_investment': INR_value_investment,
+                                                        'Total_current_investments': Total_current_investments,
+                                                        'Total_initial_investmensts': Total_initial_investmensts,
+                                                        'INR_Total': INR_Total,
+                                                        'Total': Total});
 
 
-        # labels2 = ["401k", "Mortagage"]
-        # data2 = []
-        # x = PatientEntry.objects.filter(hospital=hospital, disposition="Diagnostics").count()
-        # data2.append(diagnostic)
-        # surgery = PatientEntry.objects.filter(hospital=hospital, disposition="Surgery").count()
-        # data2.append(surgery)
-        # admitted = PatientEntry.objects.filter(hospital=hospital, disposition="Admitted Room").count()
-        # data2.append(admitted)
-        # discharged = PatientEntry.objects.filter(hospital=hospital, disposition="Discharged").count()
-        # data2.append(discharged)
-        # mortuary = PatientEntry.objects.filter(hospital=hospital, disposition="Mortuary Annex").count()
-        # data2.append(mortuary)
+@login_required
+def mutualfund_list(request):
+    mutualfunds = MutualFund.objects.filter(recent_date__lte=timezone.now())
+    return render(request, 'portfolio/mutualfund_list.html', {'mutualfunds': mutualfunds})
 
-    return render(request, 'pie_chart.html', { 'customer': customer,
-        'labels': labels,
-        'data': data,
 
-    })
+@login_required
+def mutualfund_new(request):
+    if request.method == "POST":
+        form = MutualFundForm(request.POST)
+        if form.is_valid():
+            mutualfund = form.save(commit=False)
+            mutualfund.created_date = timezone.now()
+            mutualfund.save()
+            mutualfunds = MutualFund.objects.filter(recent_date__lte=timezone.now())
+            return render(request, 'portfolio/mutualfund_list.html',
+                          {'mutualfunds': mutualfunds})
+    else:
+        form = MutualFundForm()
+        # print("Else")
+    return render(request, 'portfolio/mutualfund_new.html', {'form': form})
+
+
+@login_required
+def mutualfund_edit(request, pk):
+    mutualfund = get_object_or_404(MutualFund, pk=pk)
+    if request.method == "POST":
+        form = MutualFundForm(request.POST, instance=mutualfund)
+        if form.is_valid():
+            mutualfunds = form.save()
+            mutualfunds.updated_date = timezone.now()
+            mutualfunds.save()
+            mutualfunds = MutualFund.objects.filter(recent_date__lte=timezone.now())
+            return render(request, 'portfolio/mutualfund_list.html', {'mutualfunds': mutualfunds})
+    else:
+        # print("else")
+        form = MutualFundForm(instance=mutualfund)
+    return render(request, 'portfolio/mutualfund_edit.html', {'form': form})
+
+
+@login_required
+def mutualfund_delete(request, pk):
+    mutualfund = get_object_or_404(MutualFund, pk=pk)
+    mutualfund.delete()
+    return redirect('portfolio:mutualfund_list')
+
