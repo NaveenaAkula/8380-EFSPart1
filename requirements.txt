@@ -4,11 +4,13 @@ django-filter==2.3.0
 djangorestframework==3.11.0
 djangorestframework-jwt==1.11.0
 PyJWT==1.7.1
+django-crispy-forms==1.6.0
 pytz==2020.1
 psycopg2==2.8.4
 Django==2.2.4
 gunicorn==19.9.0
 django-heroku
 django-crispy-forms
+
 
 
