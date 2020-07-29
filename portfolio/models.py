@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 import requests
 
-
 # Create your models here.
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -95,3 +94,28 @@ class Stock(models.Model):
         json_data = requests.get(main_api).json()
         value = float(json_data["INR_PHP"])
         return value
+
+
+Categories = [("Equity Funds", "Equity Funds"), ("Bond Funds", "Bond Funds"),
+              ("Money Market Funds", "Money Market Funds")]
+
+
+class MutualFund(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='mutualfunds')
+    category = models.CharField(max_length=50, choices=Categories)
+    description = models.CharField(max_length=200)
+    acquired_value = models.DecimalField(max_digits=10, decimal_places=2)
+    acquired_date = models.DateField(default=timezone.now)
+    recent_value = models.DecimalField(max_digits=10, decimal_places=2)
+    recent_date = models.DateField(default=timezone.now, blank=True, null=True)
+
+    def created(self):
+        self.acquired_date = timezone.now()
+        self.save()
+
+    def updated(self):
+        self.recent_date = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return str(self.customer)

@@ -77,6 +77,7 @@
                 <li><a href="{% url 'portfolio:customer_list' %}">Customers</a></li>
                <li><a href="{% url 'portfolio:investment_list' %}">Investments</a></li>
                 <li><a href="{% url 'portfolio:stock_list' %}">Stocks</a></li>
+                <li><a href="{% url 'portfolio:mutualfund_list' %}">Mutual Funds</a></li>
             {% endif %}
                 <li><a href="{% url 'signup' %}">Sign up</a></li>
             </ul>
@@ -94,7 +95,6 @@
                     </li>
                 {% else %}
                     <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-
                 {% endif %}
             </ul>
         </div>
@@ -102,13 +102,13 @@
 </nav>
 <div class="content container">
     <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-16">
                     {% block content %}
 
                     <div class="links">
                             <!-- Example row of columns -->
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-4" style="width: 30rem; padding-top: 2rem;">
                                     <div class="thumbnail">
                                         <div style="height: 159px !important;;" >
                                             <img src="{% static "images/customer.jpg" %}" alt="customer"/>
@@ -127,7 +127,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4" style="width: 30rem; padding-top: 2rem;">
                                     <div class="thumbnail">
                                         <div style="height: 159px !important;" >
                                             <img src="{% static "images/nonstock.jpg" %}"  alt="non-stock"/>
@@ -141,7 +141,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4" style="width: 30rem; padding-top: 2rem;">
                                     <div class="thumbnail">
                                         <div style="height: 159px !important;" >
                                             <img src="{% static "images/stocks.jpg" %}" alt="stocks"/>
@@ -150,6 +150,19 @@
                                             <h2>Stock Portfolio</h2>
                                             <p>Our Stock portfolios vary across industries.</p>
                                             <p><a class="btn btn-default" href="{% url 'portfolio:stock_list' %}" role="button">View
+                                                details &raquo;</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" style="width: 30rem !important; padding-top: 2rem;">
+                                    <div class="thumbnail">
+                                        <div style="height: 159px !important;" >
+                                            <img src="{% static "images/mutualfunds.jpg" %}" alt="mutualfunds"/>
+                                        </div>
+                                        <div class="caption">
+                                            <h2>Mutual Funds</h2>
+                                            <p>Our Mutual Funds portfolios vary across industries.</p>
+                                            <p><a class="btn btn-default" href="{% url 'portfolio:mutualfund_list' %}" role="button">View
                                                 details &raquo;</a></p>
                                         </div>
                                     </div>
