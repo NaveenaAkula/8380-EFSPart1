@@ -3,7 +3,7 @@ six==1.15.0
 django-filter==2.3.0
 djangorestframework==3.11.0
 djangorestframework-jwt==1.11.0
-PyJWT==1.7.1
+PyJWT==2.4.0
 django-crispy-forms==1.6.0
 pytz==2020.1
 psycopg2==2.8.4
